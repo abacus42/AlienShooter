@@ -189,7 +189,9 @@ class Game:
         alienImage = pygame.transform.scale(alienImage, (100, 70))
         alienMediumImage = self.loadImage("alien_medium.png")
         alienMediumImage = pygame.transform.scale(alienMediumImage, (100, 70))
-        self.alienImages = [alienImage, alienMediumImage]
+        alienHardImage = self.loadImage("alien_hard.png")
+        alienHardImage = pygame.transform.scale(alienHardImage, (100, 70))
+        self.alienImages = [alienImage, alienMediumImage, alienHardImage]
         self.missileImage = self.loadImage("missile.png")
         shooterImage = self.loadImage("shooter.png")
         heartImage = self.loadImage("heart.png")
@@ -226,7 +228,7 @@ class Game:
     def addAlienRow(self, y):
         image_width = self.alienImages[0].get_rect().width
         for i in range(0, (self.screen.get_rect().width//image_width)):
-            lives = random.randint(1,2)
+            lives = random.randint(1,3)
             self.alienSprites.add(Alien(self.alienImages[lives-1], (i*image_width, y), lives))
 
     def loadImage(self, name):
