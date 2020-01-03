@@ -215,13 +215,13 @@ class Game:
 
     def startNewGame(self):
         self.resetGame()
+        self.ExplosionSprites.empty()
         self.showMenu = False
         self.status.reset()
 
     def resetGame(self):
         self.missileSprites.empty()
         self.alienSprites.empty()
-        self.ExplosionSprites.empty()
         self.DropSprites.empty()
         self.addAlienRow(0)
 
@@ -295,6 +295,7 @@ class Game:
                 drop.kill()
         for alien in self.alienSprites:
             if pygame.sprite.collide_rect(alien, self.statusBar) or pygame.sprite.collide_rect(alien, self.shooter):
+                self.ExplosionSprites.add(Explosion(alien.getLocation(), self.explosionImages))
                 self.status.lives -= 1
                 self.resetGame()
                 break
@@ -312,8 +313,8 @@ class Game:
             self.missileSprites.draw(self.screen)
             self.shooterSprite.draw(self.screen)
             self.alienSprites.draw(self.screen)
-            self.ExplosionSprites.draw(self.screen)
             self.DropSprites.draw(self.screen)
+            self.ExplosionSprites.draw(self.screen)
             self.statusBar.draw(self.screen)
         pygame.display.flip()
 
