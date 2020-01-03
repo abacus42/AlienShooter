@@ -2,6 +2,7 @@ import pygame
 import pygame.freetype
 import random
 import os
+import numpy
 from enum import Enum
 
 class AlienArea(pygame.sprite.Sprite):
@@ -156,7 +157,9 @@ class StatusBar(pygame.sprite.Sprite):
         self.image.fill((0,113,156))
         self.font.render_to(self.image, (5,5), "Enemies Destroyed: "+str(self.status.kills), fgcolor=(0, 0, 0))
         self.font.render_to(self.image, (300,5), "Lives: "+str(self.status.lives), fgcolor=(0, 0, 0))
+        self.font.render_to(self.image, (450,5), "Level: "+str(self.status.level), fgcolor=(0, 0, 0))
         screen.blit(self.image, self.rect)
+
 
 class Status:
     def __init__(self):
@@ -165,8 +168,13 @@ class Status:
         self.kills = 0
         self.lives = 3
         self.level = 1
+        self.DifficultyVectors = [(0.8,0.1,0.1),(0.6, 0.2, 0.2), (0.4, 0.3, 0.3), (0.2, 0.4, 0.4), (0.2, 0.2, 0.6), (0.1, 0.1, 0.8)]
+        self.DifficultyVector = self.DifficultyVectors[1]
     def levelUp(self):
         self.level += 1
+        if self.level-1 >= len(self.DifficultyVectors):
+            self.DifficultyVector = self.DifficultyVectors[level]
+
 
 class Game:
     def __init__(self):
@@ -228,7 +236,8 @@ class Game:
     def addAlienRow(self, y):
         image_width = self.alienImages[0].get_rect().width
         for i in range(0, (self.screen.get_rect().width//image_width)):
-            lives = random.randint(1,3)
+            # randomly choose number of lives of each alien
+            lives = numpy.random.choice([1,2,3], p=self.status.DifficultyVector)
             self.alienSprites.add(Alien(self.alienImages[lives-1], (i*image_width, y), lives))
 
     def loadImage(self, name):
@@ -299,7 +308,8 @@ class Game:
                 self.status.lives -= 1
                 self.resetGame()
                 break
-        if self.status.level*100 - self.status.kills <= 100:
+        # increase level every 40 kills
+        if self.status.level*40 - self.status.kills <= 0:
             self.status.levelUp()
         if self.status.lives == 0:
             self.showMenu = True
