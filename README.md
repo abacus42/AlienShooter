@@ -1,1 +1,2 @@
 # AlienShooter
+![Screenshot](screenshot.png)
